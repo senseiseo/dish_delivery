@@ -1,0 +1,21 @@
+<h1>Список блюд</h1>
+<%= form_tag create_order_path, method: :post do %>
+  <ul>
+  <% @dishes.each do |dish| %>
+     <li>
+       <%= dish.name %>
+       <ul>
+         <% dish.ingredients.each do |ingredient| %>
+           <li>
+             <%= ingredient.name %>
+             <%= hidden_field_tag "order[order_items_attributes][][dish_id]", dish.id %>
+             <%= hidden_field_tag "order[order_items_attributes][][ingredient_id]", ingredient.id %>
+             <%= check_box_tag "order[order_items_attributes][][included]", 1, !ingredient.included %>
+           </li>
+         <% end %>
+       </ul>
+      </li>
+    <% end %>
+  </ul>
+  <%= submit_tag 'Отправить' %>
+<% end %> 
