@@ -49,8 +49,8 @@ RSpec.describe OrdersController, type: :controller do
       dish1 = Dish.create(name: "Dish 1")
       dish2 = Dish.create(name: "Dish 2")
       dish3 = Dish.create(name: "Dish 3")
-      Order.create(order_data: '[{"dish_id": ' + dish1.id.to_s + '}, {"dish_id": ' + dish2.id.to_s + '}]')
-      Order.create(order_data: '[{"dish_id": ' + dish2.id.to_s + '}, {"dish_id": ' + dish3.id.to_s + '}]')
+      Order.create(order_data: [{ dish_id: dish1.id }, { dish_id: dish2.id }])
+      Order.create(order_data: [{ dish_id: dish2.id }, { dish_id: dish3.id }])
 
       get :crm
 

@@ -1,27 +1,19 @@
 class Order < ApplicationRecord
   def self.dish_counts
-    online_orders = Order.all
-    dish_counts = {}
-
-    online_orders.each do |order|
-      order_data = JSON.parse(order.order_data)
-      order_data.each do |order_item|
-        dish_id = order_item['dish_id']
-        dish_counts[dish_id] ||= 0
-        dish_counts[dish_id] += 1
+    Order
+      .joins("INNER JOIN jsonb_array_elements(order_data) AS order_item ON true")
+      .joins("INNER JOIN dishes ON dishes.id = (order_item->>'dish_id')::int")
+      .group("dishes.name")
+      .select("dishes.name AS dish_name, COUNT(*) AS count")
+      .order("count DESC, dish_name ASC")
+      .map do |result|
+        {
+          name: result.dish_name,
+          count: result.count.to_i
+        }
       end
-    end
-
-    sorted_dish_counts = dish_counts.map do |dish_id, count|
-      {
-        name: Dish.find(dish_id).name,
-        count: count
-      }
-    end.sort_by { |item| -item[:count] }
-
-    sorted_dish_counts
   end
-
+  
   def build_order_data(order_items_params)
     order_data = {}
 

@@ -1,15 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe Order, type: :model do
-  describe "dish_counts" do
+  describe ".dish_counts" do
     it "returns a hash with dish counts" do
       dish1 = Dish.create(name: "Dish 1")
       dish2 = Dish.create(name: "Dish 2")
       dish3 = Dish.create(name: "Dish 3")
-      Order.create(order_data: '[{"dish_id": ' + dish1.id.to_s + '}, {"dish_id": ' + dish2.id.to_s + '}]')
-      Order.create(order_data: '[{"dish_id": ' + dish2.id.to_s + '}, {"dish_id": ' + dish3.id.to_s + '}]')
+      Order.create(order_data: [{ dish_id: dish1.id }, { dish_id: dish2.id }])
+      Order.create(order_data: [{ dish_id: dish2.id }, { dish_id: dish3.id }])
       dish_counts = Order.dish_counts
-      
+
       expect(dish_counts).to eq([
         { name: "Dish 2", count: 2 },
         { name: "Dish 1", count: 1 },
@@ -23,7 +23,7 @@ RSpec.describe Order, type: :model do
     end
   end
 
-  describe "build_order_data" do
+  describe "#build_order_data" do
     it "builds order data hash" do
       dish = Dish.create(name: "Dish")
       ingredient1 = Ingredient.create(name: "Ingredient 1")

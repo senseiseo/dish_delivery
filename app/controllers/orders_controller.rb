@@ -3,15 +3,15 @@ class OrdersController < ApplicationController
   before_action :initialize_order, only: [:create]
   
   def index
-    @order = Order.new # Создаем новый заказ для формы
-  end
+    @order = Order.new
+  end 
 
   def create
     order_items_params = params[:order][:order_items_attributes]
   
     if order_items_params.present?
       order_data = @order.build_order_data(order_items_params)
-      @order.order_data = order_data.to_json if order_data.present?
+      @order.order_data = order_data if order_data.present?
     end
   
     if save_order_and_redirect_to_index
